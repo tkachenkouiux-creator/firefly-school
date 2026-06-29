@@ -19,7 +19,7 @@
       burger.setAttribute("aria-expanded", String(open));
     });
     nav.addEventListener("click", function (e) {
-      if (e.target.classList.contains("nav__link")) {
+      if (e.target.closest("a")) {
         nav.classList.remove("open");
         burger.setAttribute("aria-expanded", "false");
       }

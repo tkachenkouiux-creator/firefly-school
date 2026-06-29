@@ -141,6 +141,7 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.15; font-weight: 700;
 }
 .nav__link:hover { color: var(--gold-500); }
 .header__cta { margin-left: 8px; }
+.nav__actions { display: none; }
 
 .burger {
   display: none;
@@ -785,6 +786,8 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.15; font-weight: 700;
     border-bottom: 1px solid rgba(255, 200, 0, .15);
   }
   .nav.open .nav__link { padding: 14px 0; border-bottom: 1px solid rgba(255, 200, 0, .08); }
+  .nav.open .nav__actions { display: flex; gap: 10px; margin-top: 14px; }
+  .nav.open .nav__actions .btn { flex: 1; }
   .burger { display: flex; }
   .about, .trial, .contacts { grid-template-columns: 1fr; gap: 36px; }
   .cards--directions, .cards--4 { grid-template-columns: repeat(2, 1fr); }
