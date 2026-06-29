@@ -208,6 +208,30 @@ p{color:var(--cream-200)}
 .lesson:hover{border-color:rgba(255,200,0,.34);transform:translateY(-1px)}
 .lesson .chev{color:var(--cream-muted);font-size:1.1rem;flex:none}
 
+/* ---------- BOOKING PICKER (calendar + time) ---------- */
+.booking{width:100%;max-width:440px;max-height:92vh;overflow:auto;background:linear-gradient(165deg,var(--brown-card),var(--brown-800));border:1px solid rgba(255,200,0,.28);border-radius:var(--radius);box-shadow:var(--shadow);animation:pop .25s var(--ease);text-align:left}
+.booking .bk-head{padding:22px 24px 14px;border-bottom:1px solid rgba(255,200,0,.14)}
+.booking .bk-head h3{font-size:1.22rem}
+.booking .bk-head span{font-size:.85rem;color:var(--cream-muted)}
+.bk-body{padding:16px 24px 6px}
+.bk-label{font-family:var(--font-head);font-size:.76rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--gold-500);margin:0 0 11px}
+.bk-label.step2{margin-top:22px}
+.bk-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.bk-dow{font-size:.68rem;font-weight:700;color:var(--cream-muted);text-align:center;padding-bottom:2px}
+.bk-day{aspect-ratio:1;display:grid;place-items:center;border-radius:10px;font-size:.85rem;font-weight:600;border:1px solid rgba(255,200,0,.14);background:rgba(0,0,0,.14);cursor:pointer;transition:border-color .15s,background .15s,transform .15s}
+.bk-day:hover:not(.off):not(.empty){border-color:var(--gold-500);background:rgba(255,200,0,.1);transform:translateY(-1px)}
+.bk-day.sel{background:linear-gradient(135deg,var(--gold-400),var(--orange-500));color:var(--brown-900);border-color:transparent;font-weight:800}
+.bk-day.off{opacity:.25;cursor:not-allowed;border-color:transparent;background:transparent}
+.bk-day.empty{border:0;background:transparent;cursor:default}
+.bk-times{display:flex;flex-wrap:wrap;gap:8px}
+.bk-time{padding:9px 15px;border-radius:999px;border:1px solid rgba(255,200,0,.22);background:rgba(0,0,0,.16);font-size:.86rem;font-weight:600;cursor:pointer;transition:border-color .15s,background .15s,transform .15s}
+.bk-time:hover{border-color:var(--gold-500);transform:translateY(-1px)}
+.bk-time.sel{background:linear-gradient(135deg,var(--gold-400),var(--orange-500));color:var(--brown-900);border-color:transparent;font-weight:800}
+.bk-actions{display:flex;gap:10px;padding:16px 24px 22px}
+.bk-actions .btn{flex:1}
+.btn[disabled]{opacity:.4;cursor:not-allowed;box-shadow:none}
+.btn[disabled]:hover{transform:none;box-shadow:none}
+
 /* ---------- PROFILE & SETTINGS ---------- */
 .profile-head{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
 .profile-head .ava{width:84px;height:84px;border-radius:50%;background:linear-gradient(135deg,var(--gold-400),var(--orange-500));display:grid;place-items:center;font-size:2.2rem;color:var(--brown-900);flex:none;box-shadow:var(--shadow-gold);position:relative}
@@ -480,6 +504,25 @@ p{color:var(--cream-200)}
     </div>
   </div>
 </div>
+<div class="overlay" id="bookOverlay">
+  <div class="booking">
+    <div class="bk-head">
+      <h3 id="bkName"></h3>
+      <span id="bkTeacher"></span>
+    </div>
+    <div class="bk-body">
+      <div class="bk-label">1 · Обери день — Липень 2026</div>
+      <div class="bk-cal" id="bkCal"></div>
+      <div class="bk-label step2">2 · Обери час</div>
+      <div class="bk-times" id="bkTimes"></div>
+    </div>
+    <div class="bk-actions">
+      <button class="btn btn--ghost" onclick="closeBooking()">Назад</button>
+      <button class="btn btn--primary" id="bkConfirm" disabled onclick="confirmBooking()">Так, записати!</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="detailOverlay">
   <div class="detail">
     <div class="dhead">
@@ -553,6 +596,7 @@ const plans=[
   {name:"Безліміт",price:"2900",per:"/ місяць",feat:["Будь-яка кількість","Усі напрямки","Подарунок другу"],featured:false},
 ];
 const calLessons={30:"Англ 15:00",2:"Логопед",3:"Польськ",6:"Англ",8:"Психолог"};
+const bookingTimes=["10:00","11:00","12:00","15:00","16:00","17:00","18:00"];
 const notifications=[
   {ic:"⏰",t:"Нагадування: Англійська мова завтра о 15:00",when:"2 год тому",unread:true},
   {ic:"📖",t:"Новий запис: домашнє завдання з логопедії",when:"вчора · 18:20",unread:true},
@@ -592,7 +636,7 @@ function renderSlots(){
     slots.forEach((s,i)=>{
       if(s.cat!==cat) return;
       html+=`<div class="slot"><div class="left"><b>${s.ico} ${s.name}</b><span>${s.t} · ${s.teacher}</span></div>
-        <button class="btn btn--primary btn--sm" onclick="bookSlot(${i})">Записатись</button></div>`;
+        <button class="btn btn--primary btn--sm" onclick="openBooking(${i})">Записатись</button></div>`;
     });
   });
   document.getElementById('slotList').innerHTML=html;
@@ -663,6 +707,46 @@ function openModal(emoji,title,text,confirmLabel,fn){
 function closeModal(){document.getElementById('overlay').classList.remove('open');modalAction=null;}
 document.getElementById('mConfirm').addEventListener('click',()=>{if(modalAction)modalAction();closeModal();});
 function bookSlot(i){openModal("📅","Записатись на урок?",`${slots[i].name} — ${slots[i].t}`,"Так, записати!",()=>{toast("✅ Записано! Чекаємо тебе 🌟");setCoins(coins+10);});}
+
+/* ====== BOOKING PICKER (день + час) ====== */
+const dowShort=["Нд","Пн","Вт","Ср","Чт","Пт","Сб"];
+let bookingSel={i:null,day:null,time:null};
+function openBooking(i){
+  bookingSel={i,day:null,time:null};
+  const s=slots[i];
+  document.getElementById('bkName').textContent=`${s.ico} ${s.name}`;
+  document.getElementById('bkTeacher').textContent=`з ${s.teacher}`;
+  renderBookCal();renderBookTimes();updateBookConfirm();
+  document.getElementById('bookOverlay').classList.add('open');
+}
+function renderBookCal(){
+  let html=["Пн","Вт","Ср","Чт","Пт","Сб","Нд"].map(d=>`<div class="bk-dow">${d}</div>`).join('');
+  const offset=(new Date(2026,6,1).getDay()+6)%7; // Липень 2026, з понеділка
+  for(let k=0;k<offset;k++) html+=`<div class="bk-day empty"></div>`;
+  for(let d=1;d<=31;d++){
+    const sunday=new Date(2026,6,d).getDay()===0; // неділя — вихідний
+    const sel=bookingSel.day===d?'sel':'';
+    html+=`<div class="bk-day ${sunday?'off':''} ${sel}" ${sunday?'':`onclick="pickDay(${d})"`}>${d}</div>`;
+  }
+  document.getElementById('bkCal').innerHTML=html;
+}
+function renderBookTimes(){
+  document.getElementById('bkTimes').innerHTML=bookingTimes.map(t=>
+    `<div class="bk-time ${bookingSel.time===t?'sel':''}" onclick="pickTime('${t}')">${t}</div>`).join('');
+}
+function pickDay(d){bookingSel.day=d;renderBookCal();updateBookConfirm();}
+function pickTime(t){bookingSel.time=t;renderBookTimes();updateBookConfirm();}
+function updateBookConfirm(){document.getElementById('bkConfirm').disabled=!(bookingSel.day&&bookingSel.time);}
+function confirmBooking(){
+  if(!(bookingSel.day&&bookingSel.time))return;
+  const s=slots[bookingSel.i];
+  const wd=dowShort[new Date(2026,6,bookingSel.day).getDay()];
+  closeBooking();
+  toast(`✅ Записано! ${s.name} · ${wd}, ${bookingSel.day} лип · ${bookingSel.time} 🌟`);
+  setCoins(coins+10);
+}
+function closeBooking(){document.getElementById('bookOverlay').classList.remove('open');}
+document.getElementById('bookOverlay').addEventListener('click',e=>{if(e.target.id==='bookOverlay')closeBooking();});
 function cancelLesson(name){openModal("😯","Скасувати урок?",`${name}. Місце звільниться для інших.`,"Скасувати",()=>{toast("Урок скасовано. Запишись знову, коли буде зручно 💛");});}
 function cancelSub(){openModal("💳","Скасувати абонемент?","Доступ збережеться до кінця оплаченого періоду.","Скасувати",()=>{toast("Абонемент скасовано. Будемо сумувати 🥺");});}
 function buyPlan(name,price){openModal("🎉","Оформити абонемент?",`${name} — ${price} ₴. Далі відкриється безпечна оплата.`,"Перейти до оплати",()=>{toast("💳 Тут відкриється оплата (WayForPay / Fondy)");});}
