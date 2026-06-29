@@ -72,7 +72,7 @@ p{color:var(--cream-200)}
 .sidebar .spacer{flex:1}
 .sidebar .logout{color:var(--cream-muted)}
 
-.main{padding:30px 36px;max-width:1040px;margin:0 auto;width:100%}
+.main{padding:30px 36px;max-width:1040px;margin:0 auto;width:100%;min-width:0}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px;gap:16px;flex-wrap:wrap}
 .topbar h2{font-size:1.55rem}
 .topbar .hello{font-size:.9rem;color:var(--cream-muted)}
@@ -111,7 +111,7 @@ p{color:var(--cream-200)}
 .tag.ok{background:rgba(123,211,137,.14);color:var(--green)}
 .tag.soon{background:rgba(124,197,255,.14);color:var(--blue)}
 
-.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
 .cal .dow{font-size:.72rem;font-weight:700;color:var(--cream-muted);text-align:center;padding-bottom:4px;text-transform:uppercase}
 .cal .day{aspect-ratio:1;border:1px solid rgba(255,200,0,.14);border-radius:12px;padding:7px;font-size:.8rem;font-weight:600;display:flex;flex-direction:column;gap:3px;background:rgba(0,0,0,.12);min-height:62px}
 .cal .day .num{color:var(--cream-muted);font-size:.75rem}
@@ -216,7 +216,7 @@ p{color:var(--cream-200)}
 .bk-body{padding:16px 24px 6px}
 .bk-label{font-family:var(--font-head);font-size:.76rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--gold-500);margin:0 0 11px}
 .bk-label.step2{margin-top:22px}
-.bk-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.bk-cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
 .bk-dow{font-size:.68rem;font-weight:700;color:var(--cream-muted);text-align:center;padding-bottom:2px}
 .bk-day{aspect-ratio:1;display:grid;place-items:center;border-radius:10px;font-size:.85rem;font-weight:600;border:1px solid rgba(255,200,0,.14);background:rgba(0,0,0,.14);cursor:pointer;transition:border-color .15s,background .15s,transform .15s}
 .bk-day:hover:not(.off):not(.empty){border-color:var(--gold-500);background:rgba(255,200,0,.1);transform:translateY(-1px)}
@@ -258,7 +258,7 @@ p{color:var(--cream-200)}
 
 .mtab{display:none}
 @media(max-width:860px){
-  .app-grid{grid-template-columns:1fr}
+  .app-grid{grid-template-columns:minmax(0,1fr)}
   .sidebar{display:none}
   .main{padding:18px 16px 90px}
   .cols-2,.cols-3{grid-template-columns:1fr}
