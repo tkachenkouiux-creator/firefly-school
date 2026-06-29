@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Firefly School — Особистий кабінет</title>
+<meta name="description" content="Особистий кабінет учня Firefly School: уроки, календар, домашні завдання, бали та оплата абонементу." />
+<link rel="icon" type="image/png" href="assets/firefly.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --brown-900:#1B0F09; --brown-800:#2A1A12; --brown-700:#3A251A; --brown-600:#4E3322;
+  --brown-card:#44291B;
+  --gold-500:#FFC800; --gold-400:#FFD84D; --orange-500:#E8821E;
+  --cream-50:#FFF6E6; --cream-200:#EAD9BE; --cream-muted:#c9b390;
+  --green:#7BD389; --red:#FF8A6B; --blue:#7CC5FF;
+  --maxw:1180px; --radius:20px; --radius-sm:14px;
+  --shadow:0 18px 50px rgba(0,0,0,.35); --shadow-gold:0 12px 36px rgba(255,200,0,.22);
+  --ease:cubic-bezier(.22,1,.36,1);
+  --font-head:"Comfortaa",system-ui,sans-serif; --font-body:"Manrope",system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--brown-700);color:var(--cream-50);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(900px 600px at 80% -5%, rgba(255,200,0,.16), transparent 60%),
+    radial-gradient(800px 700px at 0% 12%, rgba(232,130,30,.12), transparent 55%),
+    linear-gradient(180deg,#3A251A 0%, #2A1A12 60%, #1B0F09 100%);}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:var(--font-head);font-weight:700;line-height:1.15}
+p{color:var(--cream-200)}
+.gold-text{color:var(--gold-500)}
+
+/* Buttons (з реального сайту) */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;font-family:var(--font-body);font-weight:700;border:0;cursor:pointer;border-radius:999px;padding:14px 26px;font-size:1rem;transition:transform .25s var(--ease),box-shadow .25s var(--ease),background .25s,color .25s;white-space:nowrap}
+.btn--primary{background:linear-gradient(135deg,var(--gold-400),var(--gold-500) 55%,var(--orange-500));color:var(--brown-900);box-shadow:var(--shadow-gold)}
+.btn--primary:hover{transform:translateY(-2px);box-shadow:0 16px 44px rgba(255,200,0,.38)}
+.btn--ghost{background:transparent;color:var(--cream-50);border:1.5px solid rgba(255,246,230,.35)}
+.btn--ghost:hover{border-color:var(--gold-500);color:var(--gold-500)}
+.btn--sm{padding:10px 18px;font-size:.9rem}
+.btn--danger{background:rgba(255,138,107,.12);color:var(--red);border:1.5px solid rgba(255,138,107,.4)}
+.btn--danger:hover{background:rgba(255,138,107,.2)}
+
+/* ---------- LOGIN ---------- */
+#loginView{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-card{width:100%;max-width:420px;background:linear-gradient(165deg,var(--brown-card),var(--brown-800));border:1px solid rgba(255,200,0,.18);border-radius:var(--radius);padding:38px 32px;box-shadow:var(--shadow);text-align:center}
+.login-card .brand{width:170px;height:auto;margin:0 auto 16px;display:block;filter:drop-shadow(0 8px 22px rgba(255,200,0,.35))}
+.login-card h1{font-size:1.7rem;margin-bottom:6px}
+.login-card .sub{font-size:.96rem;margin-bottom:18px}
+.login-note{display:flex;gap:9px;align-items:flex-start;text-align:left;background:rgba(255,200,0,.06);border:1px solid rgba(255,200,0,.16);border-radius:var(--radius-sm);padding:11px 14px;margin-bottom:22px;font-size:.8rem;color:var(--cream-200);line-height:1.45}
+.login-note .ni{flex:none;font-size:.95rem;line-height:1.45}
+.field{text-align:left;margin-bottom:16px}
+.field label{display:block;font-size:.82rem;font-weight:700;color:var(--gold-400);margin-bottom:7px}
+.field input{width:100%;background:rgba(0,0,0,.24);border:1px solid rgba(255,200,0,.16);border-radius:var(--radius-sm);padding:14px 16px;color:var(--cream-50);font-family:inherit;font-size:.96rem;transition:border-color .2s}
+.field input:focus{outline:none;border-color:var(--gold-500)}
+.login-card .btn{width:100%;margin-top:6px}
+.login-hint{margin-top:18px;font-size:.78rem;color:var(--cream-muted)}
+.back-home{display:inline-block;margin-top:18px;font-size:.85rem;color:var(--cream-200);border-bottom:1px dashed rgba(255,200,0,.3)}
+
+/* ---------- APP SHELL ---------- */
+#appView{display:none}
+.app-grid{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+.sidebar{background:linear-gradient(180deg,rgba(27,15,9,.55),rgba(27,15,9,.2));border-right:1px solid rgba(255,200,0,.14);padding:22px 16px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
+.sidebar .brand{display:block;margin:4px auto 18px;width:150px;height:auto;filter:drop-shadow(0 6px 16px rgba(255,200,0,.32))}
+.nav-item{display:flex;align-items:center;gap:13px;padding:12px 14px;border-radius:var(--radius-sm);font-weight:600;font-size:.96rem;color:var(--cream-200);cursor:pointer;transition:background .2s,color .2s;border:1px solid transparent}
+.nav-item .ico{font-size:1.2rem;width:24px;text-align:center}
+.nav-item:hover{background:rgba(255,200,0,.07);color:var(--cream-50)}
+.nav-item.active{background:rgba(255,200,0,.14);color:var(--gold-500);border-color:rgba(255,200,0,.28)}
+.sidebar .spacer{flex:1}
+.sidebar .logout{color:var(--cream-muted)}
+
+.main{padding:30px 36px;max-width:1040px;margin:0 auto;width:100%}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px;gap:16px;flex-wrap:wrap}
+.topbar h2{font-size:1.55rem}
+.topbar .hello{font-size:.9rem;color:var(--cream-muted)}
+.coins{display:inline-flex;align-items:center;gap:8px;background:rgba(255,200,0,.12);border:1px solid rgba(255,200,0,.3);border-radius:999px;padding:8px 16px;font-weight:800;color:var(--gold-500)}
+.coins .star{font-size:1.05rem}
+
+.view{display:none;animation:fade .35s var(--ease)}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.card{background:linear-gradient(160deg,rgba(255,200,0,.06),rgba(255,200,0,.015));border:1px solid rgba(255,200,0,.14);border-radius:var(--radius);padding:22px}
+.card-row{display:grid;gap:16px}
+.cols-2{grid-template-columns:1fr 1fr}
+.cols-3{grid-template-columns:repeat(3,1fr)}
+.section-title{font-family:var(--font-head);font-size:.82rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-500);margin:28px 0 14px}
+.section-title:first-child{margin-top:0}
+
+.next-lesson{background:linear-gradient(135deg,rgba(255,200,0,.16),rgba(232,130,30,.05));border:1px solid rgba(255,200,0,.28);border-radius:var(--radius);padding:24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.next-lesson .emoji{font-size:3rem;filter:drop-shadow(0 4px 10px rgba(255,200,0,.35))}
+.next-lesson .info{flex:1;min-width:200px}
+.next-lesson .info .when{font-size:.8rem;color:var(--gold-400);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.next-lesson .info h3{font-size:1.35rem;margin:4px 0}
+.next-lesson .info p{font-size:.9rem}
+
+.tile{background:linear-gradient(160deg,rgba(255,200,0,.07),rgba(255,200,0,.02));border:1px solid rgba(255,200,0,.14);border-radius:var(--radius-sm);padding:18px;text-align:center}
+.tile .big{font-family:var(--font-head);font-size:1.9rem;font-weight:700;color:var(--gold-500);line-height:1}
+.tile .lbl{font-size:.78rem;color:var(--cream-muted);margin-top:6px}
+
+.lesson{display:flex;align-items:center;gap:16px;padding:16px 18px;border:1px solid rgba(255,200,0,.14);border-radius:var(--radius-sm);background:rgba(0,0,0,.14);margin-bottom:12px}
+.lesson .dot{width:46px;height:46px;flex:none;border-radius:14px;display:grid;place-items:center;font-size:1.4rem;background:rgba(255,200,0,.13)}
+.lesson .meta{flex:1;min-width:0}
+.lesson .meta b{font-size:.98rem;display:block}
+.lesson .meta span{font-size:.82rem;color:var(--cream-muted)}
+.lesson .when{font-size:.85rem;font-weight:700;color:var(--gold-400);text-align:right;white-space:nowrap}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:999px;margin-top:4px}
+.tag.ok{background:rgba(123,211,137,.14);color:var(--green)}
+.tag.soon{background:rgba(124,197,255,.14);color:var(--blue)}
+
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.cal .dow{font-size:.72rem;font-weight:700;color:var(--cream-muted);text-align:center;padding-bottom:4px;text-transform:uppercase}
+.cal .day{aspect-ratio:1;border:1px solid rgba(255,200,0,.14);border-radius:12px;padding:7px;font-size:.8rem;font-weight:600;display:flex;flex-direction:column;gap:3px;background:rgba(0,0,0,.12);min-height:62px}
+.cal .day .num{color:var(--cream-muted);font-size:.75rem}
+.cal .day.today{border-color:var(--gold-500);background:rgba(255,200,0,.1)}
+.cal .pill{font-size:.62rem;font-weight:700;padding:2px 5px;border-radius:6px;background:rgba(255,200,0,.18);color:var(--gold-400);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.slot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border:1px solid rgba(255,200,0,.14);border-radius:var(--radius-sm);background:rgba(0,0,0,.14);margin-bottom:10px;flex-wrap:wrap}
+.slot .left b{display:block;font-size:.95rem}
+.slot .left span{font-size:.82rem;color:var(--cream-muted)}
+
+.plan{border:1px solid rgba(255,200,0,.14);border-radius:var(--radius);padding:24px;background:linear-gradient(160deg,rgba(255,200,0,.05),rgba(255,200,0,.01));position:relative;display:flex;flex-direction:column}
+.plan.featured{border-color:var(--gold-500);box-shadow:0 0 0 1px rgba(255,200,0,.25)}
+.plan .badge{position:absolute;top:-12px;left:24px;background:linear-gradient(135deg,var(--gold-400),var(--orange-500));color:var(--brown-900);font-size:.72rem;font-weight:800;padding:5px 12px;border-radius:999px}
+.plan h3{font-size:1.1rem;margin-bottom:6px}
+.plan .price{font-family:var(--font-head);font-size:2rem;font-weight:700;color:var(--gold-500);margin:8px 0}
+.plan .price small{font-size:.85rem;color:var(--cream-muted)}
+.plan ul{list-style:none;margin:14px 0 20px;display:flex;flex-direction:column;gap:9px}
+.plan li{font-size:.88rem;color:var(--cream-200);display:flex;gap:9px;align-items:flex-start}
+.plan li::before{content:"✓";color:var(--green);font-weight:800}
+.plan .btn{margin-top:auto}
+.current-plan{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+
+.hw{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;border:1px solid rgba(255,200,0,.14);border-radius:var(--radius-sm);background:rgba(0,0,0,.14);margin-bottom:12px}
+.hw .chk{width:24px;height:24px;flex:none;border-radius:8px;border:2px solid rgba(255,200,0,.34);display:grid;place-items:center;cursor:pointer;font-size:.85rem;color:transparent;transition:.2s}
+.hw.done .chk{background:var(--green);border-color:var(--green);color:#1d3a22}
+.hw .body{flex:1}
+.hw .body b{font-size:.95rem}
+.hw.done .body b{text-decoration:line-through;color:var(--cream-muted)}
+.hw .body p{font-size:.8rem;margin-top:2px}
+
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:14px}
+.bdg{text-align:center;padding:18px 10px;border:1px solid rgba(255,200,0,.14);border-radius:var(--radius-sm);background:rgba(0,0,0,.14)}
+.bdg .ic{font-size:2.3rem;display:block;margin-bottom:6px}
+.bdg.locked{opacity:.4;filter:grayscale(.6)}
+.bdg b{font-size:.8rem;display:block}
+.bdg span{font-size:.68rem;color:var(--cream-muted)}
+.progress{height:10px;background:rgba(0,0,0,.28);border-radius:999px;overflow:hidden;margin:10px 0 6px}
+.progress i{display:block;height:100%;background:linear-gradient(135deg,var(--gold-400),var(--orange-500));border-radius:999px}
+
+.overlay{position:fixed;inset:0;background:rgba(20,10,0,.66);backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.open{display:flex}
+.modal{width:100%;max-width:420px;background:linear-gradient(165deg,var(--brown-card),var(--brown-800));border:1px solid rgba(255,200,0,.28);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);text-align:center;animation:pop .25s var(--ease)}
+@keyframes pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+.modal .emoji{font-size:2.8rem}
+.modal h3{font-size:1.3rem;margin:8px 0}
+.modal p{font-size:.92rem;margin-bottom:20px}
+.modal .actions{display:flex;gap:10px}
+.modal .actions .btn{flex:1}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(160%);opacity:0;visibility:hidden;background:linear-gradient(135deg,var(--gold-400),var(--orange-500));color:var(--brown-900);font-weight:700;padding:14px 24px;border-radius:999px;box-shadow:0 16px 40px rgba(255,200,0,.4);z-index:200;transition:transform .4s var(--ease),opacity .3s var(--ease),visibility .4s;font-size:.9rem}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible}
+
+/* ---------- TOPBAR TOOLS (avatar + bell) ---------- */
+.topbar .tools{display:flex;align-items:center;gap:12px}
+.bell{position:relative;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,200,0,.22);background:rgba(0,0,0,.18);display:grid;place-items:center;font-size:1.15rem;cursor:pointer;transition:background .2s,transform .2s}
+.bell:hover{background:rgba(255,200,0,.12);transform:translateY(-1px)}
+.bell .dot{position:absolute;top:7px;right:8px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:var(--red);border:2px solid var(--brown-700);color:#3a1a12;font-size:.62rem;font-weight:800;display:grid;place-items:center}
+.bell .dot.hide{display:none}
+.avatar{width:44px;height:44px;border-radius:50%;flex:none;cursor:pointer;display:grid;place-items:center;font-size:1.2rem;color:var(--brown-900);background:linear-gradient(135deg,var(--gold-400),var(--orange-500));box-shadow:var(--shadow-gold);transition:transform .2s;border:2px solid rgba(255,246,230,.25)}
+.avatar:hover{transform:translateY(-1px)}
+
+/* notification dropdown */
+.notif-wrap{position:relative}
+.notif-panel{position:absolute;right:0;top:54px;width:336px;max-width:86vw;background:linear-gradient(165deg,var(--brown-card),var(--brown-800));border:1px solid rgba(255,200,0,.24);border-radius:var(--radius-sm);box-shadow:var(--shadow);padding:8px;z-index:120;display:none}
+.notif-panel.open{display:block;animation:pop .2s var(--ease)}
+.notif-panel .nhead{display:flex;justify-content:space-between;align-items:center;padding:8px 10px 10px}
+.notif-panel .nhead b{font-size:.96rem;font-family:var(--font-head)}
+.notif-panel .nhead button{background:none;border:0;color:var(--gold-400);font-size:.76rem;cursor:pointer;font-weight:700}
+.notif{display:flex;gap:11px;padding:11px 10px;border-radius:12px;cursor:pointer;transition:background .2s;align-items:flex-start}
+.notif:hover{background:rgba(255,200,0,.08)}
+.notif.unread{background:rgba(255,200,0,.06)}
+.notif .nic{font-size:1.25rem;width:28px;text-align:center;flex:none}
+.notif .ntxt b{font-size:.85rem;display:block;font-weight:600;color:var(--cream-200);line-height:1.35}
+.notif.unread .ntxt b{color:var(--cream-50)}
+.notif .ntxt span{font-size:.73rem;color:var(--cream-muted)}
+.notif-empty{text-align:center;padding:26px 10px;color:var(--cream-muted);font-size:.85rem}
+
+/* ---------- LESSON DETAIL ---------- */
+.detail{width:100%;max-width:470px;background:linear-gradient(165deg,var(--brown-card),var(--brown-800));border:1px solid rgba(255,200,0,.28);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;text-align:left;animation:pop .25s var(--ease)}
+.detail .dhead{display:flex;gap:16px;align-items:center;padding:24px;background:linear-gradient(135deg,rgba(255,200,0,.18),rgba(232,130,30,.05));border-bottom:1px solid rgba(255,200,0,.18)}
+.detail .dhead .demoji{font-size:2.7rem;filter:drop-shadow(0 4px 10px rgba(255,200,0,.35))}
+.detail .dhead h3{font-size:1.3rem;margin-bottom:3px}
+.detail .dhead .dwhen{font-size:.85rem;color:var(--gold-400);font-weight:700}
+.detail .dbody{padding:22px 24px}
+.detail .drow{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;font-size:.9rem;color:var(--cream-200)}
+.detail .drow:last-child{margin-bottom:0}
+.detail .drow .di{font-size:1.05rem;width:22px;flex:none;text-align:center}
+.detail .drow b{color:var(--cream-50);font-weight:700}
+.detail .matlist{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.detail .mat{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid rgba(255,200,0,.16);border-radius:12px;background:rgba(0,0,0,.16);font-size:.85rem;color:var(--cream-200)}
+.detail .dactions{display:flex;gap:10px;padding:4px 24px 24px}
+.detail .dactions .btn{flex:1}
+.lesson{cursor:pointer;transition:border-color .2s,transform .2s}
+.lesson:hover{border-color:rgba(255,200,0,.34);transform:translateY(-1px)}
+.lesson .chev{color:var(--cream-muted);font-size:1.1rem;flex:none}
+
+/* ---------- PROFILE & SETTINGS ---------- */
+.profile-head{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.profile-head .ava{width:84px;height:84px;border-radius:50%;background:linear-gradient(135deg,var(--gold-400),var(--orange-500));display:grid;place-items:center;font-size:2.2rem;color:var(--brown-900);flex:none;box-shadow:var(--shadow-gold);position:relative}
+.profile-head .ava .edit{position:absolute;bottom:-2px;right:-2px;width:28px;height:28px;border-radius:50%;background:var(--brown-700);border:1px solid rgba(255,200,0,.4);display:grid;place-items:center;font-size:.8rem;cursor:pointer}
+.profile-head .pinfo h3{font-size:1.35rem}
+.profile-head .pinfo p{font-size:.86rem;margin-top:2px}
+.toggle{position:relative;width:48px;height:27px;border-radius:999px;background:rgba(0,0,0,.32);border:1px solid rgba(255,200,0,.2);cursor:pointer;transition:background .25s;flex:none}
+.toggle i{position:absolute;top:2px;left:2px;width:21px;height:21px;border-radius:50%;background:var(--cream-200);transition:left .25s var(--ease),background .25s}
+.toggle.on{background:linear-gradient(135deg,var(--gold-400),var(--orange-500))}
+.toggle.on i{left:23px;background:#fff}
+.setrow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 0;border-bottom:1px solid rgba(255,200,0,.1)}
+.setrow:last-child{border-bottom:0}
+.setrow .lab b{font-size:.92rem;display:block}
+.setrow .lab span{font-size:.78rem;color:var(--cream-muted)}
+
+/* ---------- MOBILE "MORE" SHEET ---------- */
+.sheet{position:fixed;inset:0;z-index:90;display:none}
+.sheet.open{display:block}
+.sheet .sheet-bg{position:absolute;inset:0;background:rgba(20,10,0,.6);backdrop-filter:blur(4px)}
+.sheet .sheet-card{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,var(--brown-card),var(--brown-800));border-top:1px solid rgba(255,200,0,.22);border-radius:22px 22px 0 0;padding:10px 14px calc(16px + env(safe-area-inset-bottom));animation:slideup .3s var(--ease)}
+@keyframes slideup{from{transform:translateY(100%)}to{transform:none}}
+.sheet .grab{width:44px;height:4px;border-radius:999px;background:rgba(255,246,230,.3);margin:6px auto 14px}
+.sheet .nav-item{font-size:1rem;padding:14px}
+
+.mtab{display:none}
+@media(max-width:860px){
+  .app-grid{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .main{padding:18px 16px 90px}
+  .cols-2,.cols-3{grid-template-columns:1fr}
+  .cal{font-size:.65rem}
+  .cal .day{min-height:50px;padding:5px}
+  .mtab{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:60;background:rgba(27,15,9,.96);backdrop-filter:blur(14px);border-top:1px solid rgba(255,200,0,.16);padding:8px 6px;justify-content:space-around}
+  .mtab .nav-item{flex-direction:column;gap:2px;font-size:.62rem;padding:6px 4px;text-align:center}
+  .mtab .nav-item .ico{font-size:1.25rem}
+  .notif-panel{position:fixed;top:64px;left:12px;right:12px;width:auto;max-width:none}
+  .topbar{align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<section id="loginView">
+  <div class="login-card">
+    <img class="brand" src="assets/logo-clean.png" alt="Firefly School" />
+    <h1>Привіт! 👋</h1>
+    <p class="sub">Заходь у свій світлячковий кабінет</p>
+    <div class="login-note"><span class="ni">🔒</span><span>Кабінет доступний лише для дітей, які навчаються у Firefly School, та їхніх батьків. Дані для входу видає адміністрація школи.</span></div>
+    <div class="field">
+      <label>Логін або email</label>
+      <input id="loginInput" type="text" placeholder="напр. olenka2018" autocomplete="username" />
+    </div>
+    <div class="field">
+      <label>Пароль</label>
+      <input id="passInput" type="password" placeholder="••••••••" autocomplete="current-password" />
+    </div>
+    <button class="btn btn--primary" onclick="doLogin()">Увійти ✨</button>
+    <p class="login-hint">Демо-режим: впиши будь-що та натисни «Увійти»</p>
+    <a class="back-home" href="index.html">← На головну</a>
+  </div>
+</section>
+
+<!-- ============ APP ============ -->
+<section id="appView">
+  <div class="app-grid">
+    <aside class="sidebar">
+      <a href="index.html" title="На головну"><img class="brand" src="assets/logo-clean.png" alt="Firefly School" /></a>
+      <div class="nav-item active" data-view="dash"><span class="ico">🏠</span> Головна</div>
+      <div class="nav-item" data-view="calendar"><span class="ico">📅</span> Календар</div>
+      <div class="nav-item" data-view="book"><span class="ico">➕</span> Записатись</div>
+      <div class="nav-item" data-view="homework"><span class="ico">📖</span> Завдання</div>
+      <div class="nav-item" data-view="rewards"><span class="ico">🏆</span> Мої бали</div>
+      <div class="nav-item" data-view="payments"><span class="ico">💳</span> Абонемент</div>
+      <div class="nav-item" data-view="profile"><span class="ico">⚙️</span> Профіль</div>
+      <div class="spacer"></div>
+      <div class="nav-item logout" onclick="logout()"><span class="ico">↪</span> Вийти</div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h2 id="viewTitle">Привіт, Оленко! 🌟</h2>
+          <div class="hello" id="viewSub">Готова сяяти сьогодні?</div>
+        </div>
+        <div class="tools">
+          <div class="coins"><span class="star">⭐</span><span id="coinCount">240</span> балів</div>
+          <div class="notif-wrap">
+            <div class="bell" onclick="toggleNotif(event)" title="Сповіщення">🔔<span class="dot" id="notifDot">2</span></div>
+            <div class="notif-panel" id="notifPanel">
+              <div class="nhead"><b>Сповіщення</b><button onclick="markAllRead(event)">Прочитати всі</button></div>
+              <div id="notifList"></div>
+            </div>
+          </div>
+          <div class="avatar" id="topAvatar" onclick="switchView('profile')" title="Профіль">🦊</div>
+        </div>
+      </div>
+
+      <!-- DASH -->
+      <div class="view active" id="view-dash">
+        <div class="next-lesson">
+          <div class="emoji">🇬🇧</div>
+          <div class="info">
+            <div class="when">Найближчий урок · завтра</div>
+            <h3>Англійська мова</h3>
+            <p>Вівторок, 30 червня · 15:00 · з Марією О.</p>
+          </div>
+          <button class="btn btn--ghost btn--sm" onclick="cancelLesson('Англійська мова')">Скасувати</button>
+        </div>
+        <div class="section-title">Цього тижня</div>
+        <div class="card-row cols-3">
+          <div class="tile"><div class="big">3</div><div class="lbl">уроки заплановано</div></div>
+          <div class="tile"><div class="big">12</div><div class="lbl">днів поспіль 🔥</div></div>
+          <div class="tile"><div class="big">2</div><div class="lbl">завдання чекають</div></div>
+        </div>
+        <div class="section-title">Мої уроки</div>
+        <div id="dashLessons"></div>
+      </div>
+
+      <!-- CALENDAR -->
+      <div class="view" id="view-calendar">
+        <div class="card">
+          <h3 style="margin-bottom:16px">Червень 2026</h3>
+          <div class="cal" id="calGrid"></div>
+        </div>
+        <div class="section-title">Розклад на тиждень</div>
+        <div id="weekList"></div>
+      </div>
+
+      <!-- BOOK -->
+      <div class="view" id="view-book">
+        <div class="card">
+          <h3 style="margin-bottom:6px">Записатись на урок ➕</h3>
+          <p style="font-size:.9rem;margin-bottom:8px">Усі наші напрямки — обери заняття і зручний час, місце за тобою!</p>
+          <div id="slotList"></div>
+        </div>
+      </div>
+
+      <!-- HOMEWORK -->
+      <div class="view" id="view-homework">
+        <div class="card">
+          <h3 style="margin-bottom:4px">Домашні завдання 📖</h3>
+          <p style="font-size:.9rem;margin-bottom:18px">За кожне виконане завдання — <b class="gold-text">+20 балів</b>!</p>
+          <div id="hwList"></div>
+        </div>
+      </div>
+
+      <!-- REWARDS -->
+      <div class="view" id="view-rewards">
+        <div class="card" style="text-align:center;margin-bottom:18px">
+          <div style="font-size:.8rem;font-weight:700;color:var(--cream-muted)">До наступного рівня</div>
+          <h3 style="font-size:1.5rem;margin:4px 0">Рівень 4 · Світлячок-зірочка</h3>
+          <div class="progress"><i style="width:60%"></i></div>
+          <p style="font-size:.82rem">240 / 400 балів — ще <b class="gold-text">160</b> до Рівня 5 🚀</p>
+        </div>
+        <div class="section-title">Мої бейджі</div>
+        <div class="badge-grid" id="badgeGrid"></div>
+      </div>
+
+      <!-- PAYMENTS -->
+      <div class="view" id="view-payments">
+        <div class="card" style="margin-bottom:18px">
+          <div class="current-plan">
+            <div style="font-size:2.5rem">💳</div>
+            <div style="flex:1;min-width:180px">
+              <div style="font-size:.8rem;color:var(--cream-muted);font-weight:700">Поточний абонемент</div>
+              <h3 style="font-size:1.25rem">Місячний · 8 уроків</h3>
+              <p style="font-size:.85rem">Активний до 15 липня 2026 · залишилось 5 уроків</p>
+            </div>
+            <button class="btn btn--danger btn--sm" onclick="cancelSub()">Скасувати</button>
+          </div>
+        </div>
+        <div class="section-title">Обрати / продовжити</div>
+        <div class="card-row cols-3" id="plans"></div>
+      </div>
+
+      <!-- PROFILE -->
+      <div class="view" id="view-profile">
+        <div class="card" style="margin-bottom:18px">
+          <div class="profile-head">
+            <div class="ava">🦊<div class="edit" onclick="toast('📷 Тут відкриється вибір фото')" title="Змінити фото">📷</div></div>
+            <div class="pinfo">
+              <h3>Оленка Ткаченко</h3>
+              <p>Учениця · Рівень 4 · з нами з вересня 2025</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-row cols-2">
+          <div class="card">
+            <div class="section-title" style="margin-top:0">Дані дитини</div>
+            <div class="field"><label>Ім'я та прізвище</label><input id="pfName" type="text" value="Оленка Ткаченко" /></div>
+            <div class="field"><label>Вік</label><input id="pfAge" type="text" value="8 років" /></div>
+            <div class="field" style="margin-bottom:0"><label>Напрямки</label><input id="pfDir" type="text" value="Англійська, Логопед, Творчість" /></div>
+          </div>
+
+          <div class="card">
+            <div class="section-title" style="margin-top:0">Контакт батьків</div>
+            <div class="field"><label>Ім'я того, хто з нами на звʼязку</label><input id="pfParent" type="text" value="Анжела Ткаченко" /></div>
+            <div class="field"><label>Телефон</label><input id="pfPhone" type="tel" value="+380 67 123 45 67" /></div>
+            <div class="field" style="margin-bottom:0"><label>Email</label><input id="pfEmail" type="email" value="tkachenko.ui.ux@gmail.com" /></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="section-title" style="margin-top:0">Сповіщення та мова</div>
+          <div class="setrow">
+            <div class="lab"><b>Нагадування про уроки</b><span>Сповіщення за годину до заняття</span></div>
+            <div class="toggle on" onclick="toggleSwitch(this,'Нагадування про уроки')"><i></i></div>
+          </div>
+          <div class="setrow">
+            <div class="lab"><b>Нові домашні завдання</b><span>Коли вчитель додає завдання</span></div>
+            <div class="toggle on" onclick="toggleSwitch(this,'Сповіщення про ДЗ')"><i></i></div>
+          </div>
+          <div class="setrow">
+            <div class="lab"><b>Нарахування балів</b><span>Коли отримуєш нагороду</span></div>
+            <div class="toggle" onclick="toggleSwitch(this,'Сповіщення про бали')"><i></i></div>
+          </div>
+          <div class="setrow">
+            <div class="lab"><b>Email-розсилка від школи</b><span>Новини, акції, відкриті уроки</span></div>
+            <div class="toggle on" onclick="toggleSwitch(this,'Email-розсилка')"><i></i></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="section-title" style="margin-top:0">Безпека</div>
+          <div class="card-row cols-2">
+            <div class="field" style="margin-bottom:0"><label>Новий пароль</label><input id="pfPass" type="password" placeholder="••••••••" autocomplete="new-password" /></div>
+            <div class="field" style="margin-bottom:0"><label>Повтори пароль</label><input id="pfPass2" type="password" placeholder="••••••••" autocomplete="new-password" /></div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:18px;flex-wrap:wrap">
+          <button class="btn btn--primary" onclick="saveProfile()">💾 Зберегти зміни</button>
+          <button class="btn btn--danger" onclick="logout()">↪ Вийти з кабінету</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <nav class="mtab">
+    <div class="nav-item active" data-view="dash"><span class="ico">🏠</span><span>Головна</span></div>
+    <div class="nav-item" data-view="calendar"><span class="ico">📅</span><span>Календар</span></div>
+    <div class="nav-item" data-view="book"><span class="ico">➕</span><span>Запис</span></div>
+    <div class="nav-item" data-view="homework"><span class="ico">📖</span><span>ДЗ</span></div>
+    <div class="nav-item" onclick="openSheet()"><span class="ico">⋯</span><span>Ще</span></div>
+  </nav>
+
+  <!-- mobile "more" sheet -->
+  <div class="sheet" id="sheet">
+    <div class="sheet-bg" onclick="closeSheet()"></div>
+    <div class="sheet-card">
+      <div class="grab"></div>
+      <div class="nav-item" data-view="rewards" onclick="sheetGo('rewards')"><span class="ico">🏆</span> Мої бали</div>
+      <div class="nav-item" data-view="payments" onclick="sheetGo('payments')"><span class="ico">💳</span> Абонемент</div>
+      <div class="nav-item" data-view="profile" onclick="sheetGo('profile')"><span class="ico">⚙️</span> Профіль</div>
+      <div class="nav-item logout" onclick="logout()"><span class="ico">↪</span> Вийти</div>
+    </div>
+  </div>
+</section>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="emoji" id="mEmoji">🤔</div>
+    <h3 id="mTitle"></h3>
+    <p id="mText"></p>
+    <div class="actions">
+      <button class="btn btn--ghost" onclick="closeModal()">Назад</button>
+      <button class="btn btn--primary" id="mConfirm">Так</button>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="detailOverlay">
+  <div class="detail">
+    <div class="dhead">
+      <div class="demoji" id="dEmoji">🇬🇧</div>
+      <div><h3 id="dName"></h3><div class="dwhen" id="dWhen"></div></div>
+    </div>
+    <div class="dbody" id="dBody"></div>
+    <div class="dactions">
+      <button class="btn btn--ghost" onclick="closeDetail()">Закрити</button>
+      <button class="btn btn--primary" id="dPrimary"></button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ====== DEMO DATA (заміниться даними з Supabase) ====== */
+const lessons=[
+  {ico:"🇬🇧",name:"Англійська мова",teacher:"Марія О.",when:"Вт, 30 черв · 15:00",tag:"soon",tagText:"Завтра",
+   room:"Провулок Василя Стефаника, 5 · каб. 4",online:false,dur:"45 хв",
+   desc:"Тема: тварини та їхні звуки. Повторюємо 10 нових слів і граємо в memory-гру.",
+   mats:["📘 Робочий зошит — Unit 4","🃏 Картки «Animals»"]},
+  {ico:"🗣️",name:"Логопед",teacher:"Ірина П.",when:"Чт, 2 лип · 11:00",tag:"soon",tagText:"Скоро",
+   room:"Провулок Василя Стефаника, 5 · каб. 2",online:false,dur:"30 хв",
+   desc:"Артикуляційна гімнастика та постановка звуку «Р». Закріплюємо вправу «Жабка».",
+   mats:["🪞 Дзеркальце","📄 Картка вправ «Р»"]},
+  {ico:"🇵🇱",name:"Польська мова",teacher:"Катерина Л.",when:"Пт, 3 лип · 16:30",tag:"soon",tagText:"Скоро",
+   room:"Провулок Василя Стефаника, 5 · каб. 3",online:false,dur:"45 хв",
+   desc:"Тема: моя сімʼя. Нові слова про родину та проста розмовна практика в парах.",
+   mats:["📒 Зошит з польської","✏️ Кольорові олівці"]},
+  {ico:"🔢",name:"Підготовка до школи",teacher:"Наталя В.",when:"Пн, 23 черв · 10:00",tag:"ok",tagText:"Відвідано",
+   room:"Провулок Василя Стефаника, 5 · каб. 1",online:false,dur:"45 хв",
+   desc:"Рахунок до 20, склад числа. Дитина впоралась чудово — отримала +20 балів!",
+   mats:["📗 Робочий зошит, стор. 12"]},
+];
+const slots=[
+  // Мови
+  {ico:"🇬🇧",cat:"Іноземні мови",name:"Англійська мова",t:"Пн, 6 лип · 15:00",teacher:"Марія О."},
+  {ico:"🇵🇱",cat:"Іноземні мови",name:"Польська мова",t:"Вт, 7 лип · 16:00",teacher:"Катерина Л."},
+  {ico:"🇩🇪",cat:"Іноземні мови",name:"Німецька мова",t:"Ср, 8 лип · 17:00",teacher:"Софія Д."},
+  {ico:"💬",cat:"Іноземні мови",name:"Speaking Club",t:"Пт, 10 лип · 18:00",teacher:"Марія О."},
+  // Підготовка та розвиток
+  {ico:"🎒",cat:"Підготовка та розвиток",name:"Підготовка до школи «Дошколярик»",t:"Пн, 6 лип · 10:00",teacher:"Наталя В."},
+  {ico:"🎓",cat:"Підготовка та розвиток",name:"Підготовка до НМТ",t:"Сб, 11 лип · 13:00",teacher:"Тарас М."},
+  // Гуртки
+  {ico:"♟️",cat:"Гуртки",name:"Шахи",t:"Пт, 10 лип · 17:00",teacher:"Олег С."},
+  {ico:"💻",cat:"Гуртки",name:"Програмування",t:"Вт, 7 лип · 18:00",teacher:"Андрій К."},
+  {ico:"🎭",cat:"Гуртки",name:"Акторська майстерність",t:"Чт, 9 лип · 15:00",teacher:"Ірина М."},
+  {ico:"🎩",cat:"Гуртки",name:"Уроки етикету",t:"Сб, 11 лип · 11:00",teacher:"Ірина М."},
+  // Спеціалісти
+  {ico:"🗣️",cat:"Спеціалісти",name:"Логопед",t:"Чт, 9 лип · 11:00",teacher:"Ірина П."},
+  {ico:"💛",cat:"Спеціалісти",name:"Дитячий психолог",t:"Пн, 6 лип · 12:00",teacher:"Олена Г."},
+  {ico:"🧸",cat:"Спеціалісти",name:"Няня на годину",t:"Щодня · за записом",teacher:"Команда школи"},
+];
+const homework=[
+  {t:"Англійська: вивчити 10 слів про тварин",due:"до 30 червня",done:false},
+  {t:"Логопед: вправа «Жабка» 3 рази",due:"до 2 липня",done:false},
+  {t:"Математика: робочий зошит, стор. 12",due:"виконано ✓",done:true},
+];
+const badges=[
+  {ic:"🔥",name:"Тиждень поспіль",sub:"7 днів",locked:false},
+  {ic:"⭐",name:"Перші 100 балів",sub:"набрано",locked:false},
+  {ic:"📚",name:"Книголюб",sub:"5 завдань",locked:false},
+  {ic:"🎯",name:"Влучний",sub:"10 уроків",locked:false},
+  {ic:"🏆",name:"Чемпіон місяця",sub:"Рівень 5",locked:true},
+  {ic:"💎",name:"Діамант",sub:"1000 балів",locked:true},
+];
+const plans=[
+  {name:"Разовий урок",price:"250",per:"/ урок",feat:["1 заняття","Будь-який напрямок","Без зобовʼязань"],featured:false},
+  {name:"Місячний · 8 уроків",price:"1600",per:"/ місяць",feat:["8 занять на місяць","Економія 400 ₴","Пріоритетний запис"],featured:true},
+  {name:"Безліміт",price:"2900",per:"/ місяць",feat:["Будь-яка кількість","Усі напрямки","Подарунок другу"],featured:false},
+];
+const calLessons={30:"Англ 15:00",2:"Логопед",3:"Польськ",6:"Англ",8:"Психолог"};
+const notifications=[
+  {ic:"⏰",t:"Нагадування: Англійська мова завтра о 15:00",when:"2 год тому",unread:true},
+  {ic:"📖",t:"Новий запис: домашнє завдання з логопедії",when:"вчора · 18:20",unread:true},
+  {ic:"⭐",t:"Тобі нараховано +20 балів за виконане завдання!",when:"вчора · 12:05",unread:false},
+  {ic:"💳",t:"Абонемент активний до 15 липня · залишилось 5 уроків",when:"3 дні тому",unread:false},
+];
+
+/* ====== RENDER ====== */
+function renderDash(){
+  document.getElementById('dashLessons').innerHTML=lessons.map((l,i)=>`
+    <div class="lesson" onclick="openLesson(${i})"><div class="dot">${l.ico}</div>
+      <div class="meta"><b>${l.name}</b><span>з ${l.teacher}</span>
+        <div><span class="tag ${l.tag}">${l.tagText}</span></div></div>
+      <div class="when">${l.when}</div><span class="chev">›</span></div>`).join('');
+}
+function renderWeek(){
+  document.getElementById('weekList').innerHTML=lessons.map((l,i)=>({l,i})).filter(o=>o.l.tag==='soon').map(o=>`
+    <div class="lesson" onclick="openLesson(${o.i})"><div class="dot">${o.l.ico}</div>
+      <div class="meta"><b>${o.l.name}</b><span>з ${o.l.teacher}</span></div>
+      <div class="when">${o.l.when}</div><span class="chev">›</span></div>`).join('');
+}
+function renderCal(){
+  const dow=["Пн","Вт","Ср","Чт","Пт","Сб","Нд"];
+  let html=dow.map(d=>`<div class="dow">${d}</div>`).join('');
+  for(let d=1;d<=30;d++){
+    const today=d===29?'today':'';
+    const pill=calLessons[d]?`<div class="pill">${calLessons[d]}</div>`:'';
+    html+=`<div class="day ${today}"><span class="num">${d}</span>${pill}</div>`;
+  }
+  document.getElementById('calGrid').innerHTML=html;
+}
+function renderSlots(){
+  const cats=[...new Set(slots.map(s=>s.cat))];
+  let html='';
+  cats.forEach(cat=>{
+    html+=`<div class="section-title">${cat}</div>`;
+    slots.forEach((s,i)=>{
+      if(s.cat!==cat) return;
+      html+=`<div class="slot"><div class="left"><b>${s.ico} ${s.name}</b><span>${s.t} · ${s.teacher}</span></div>
+        <button class="btn btn--primary btn--sm" onclick="bookSlot(${i})">Записатись</button></div>`;
+    });
+  });
+  document.getElementById('slotList').innerHTML=html;
+}
+function renderHW(){
+  document.getElementById('hwList').innerHTML=homework.map((h,i)=>`
+    <div class="hw ${h.done?'done':''}" id="hw${i}">
+      <div class="chk" onclick="toggleHW(${i})">✓</div>
+      <div class="body"><b>${h.t}</b><p>${h.due}</p></div></div>`).join('');
+}
+function renderBadges(){
+  document.getElementById('badgeGrid').innerHTML=badges.map(b=>`
+    <div class="bdg ${b.locked?'locked':''}"><span class="ic">${b.locked?'🔒':b.ic}</span><b>${b.name}</b><span>${b.sub}</span></div>`).join('');
+}
+function renderPlans(){
+  document.getElementById('plans').innerHTML=plans.map(p=>`
+    <div class="plan ${p.featured?'featured':''}">
+      ${p.featured?'<div class="badge">Популярний</div>':''}
+      <h3>${p.name}</h3>
+      <div class="price">${p.price} ₴<small>${p.per}</small></div>
+      <ul>${p.feat.map(f=>`<li>${f}</li>`).join('')}</ul>
+      <button class="btn ${p.featured?'btn--primary':'btn--ghost'}" onclick="buyPlan('${p.name}','${p.price}')">Оформити</button></div>`).join('');
+}
+function renderNotifs(){
+  const list=document.getElementById('notifList');
+  if(!notifications.length){list.innerHTML='<div class="notif-empty">Поки що порожньо 🌙</div>';}
+  else{list.innerHTML=notifications.map((n,i)=>`
+    <div class="notif ${n.unread?'unread':''}" onclick="readNotif(${i})">
+      <div class="nic">${n.ic}</div>
+      <div class="ntxt"><b>${n.t}</b><span>${n.when}</span></div></div>`).join('');}
+  const unread=notifications.filter(n=>n.unread).length;
+  const dot=document.getElementById('notifDot');
+  dot.textContent=unread;dot.classList.toggle('hide',unread===0);
+}
+
+/* ====== NAV ====== */
+const titles={
+  dash:["Привіт, Оленко! 🌟","Готова сяяти сьогодні?"],
+  calendar:["Календар уроків 📅","Усі твої заняття в одному місці"],
+  book:["Записатись на урок ➕","Обери зручний час"],
+  homework:["Домашні завдання 📖","Виконуй і збирай бали"],
+  rewards:["Мої бали та бейджі 🏆","Ти молодець!"],
+  payments:["Абонемент 💳","Керуй оплатою зручно"],
+  profile:["Профіль ⚙️","Дані, сповіщення та безпека"]
+};
+function switchView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('.nav-item[data-view]').forEach(el=>el.classList.toggle('active',el.dataset.view===v));
+  document.getElementById('viewTitle').textContent=titles[v][0];
+  document.getElementById('viewSub').textContent=titles[v][1];
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.nav-item[data-view]').forEach(el=>el.addEventListener('click',()=>switchView(el.dataset.view)));
+
+/* ====== ACTIONS ====== */
+let coins=240;
+function setCoins(n){coins=n;document.getElementById('coinCount').textContent=n;}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
+let modalAction=null;
+function openModal(emoji,title,text,confirmLabel,fn){
+  document.getElementById('mEmoji').textContent=emoji;
+  document.getElementById('mTitle').textContent=title;
+  document.getElementById('mText').textContent=text;
+  document.getElementById('mConfirm').textContent=confirmLabel;
+  modalAction=fn;document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('overlay').classList.remove('open');modalAction=null;}
+document.getElementById('mConfirm').addEventListener('click',()=>{if(modalAction)modalAction();closeModal();});
+function bookSlot(i){openModal("📅","Записатись на урок?",`${slots[i].name} — ${slots[i].t}`,"Так, записати!",()=>{toast("✅ Записано! Чекаємо тебе 🌟");setCoins(coins+10);});}
+function cancelLesson(name){openModal("😯","Скасувати урок?",`${name}. Місце звільниться для інших.`,"Скасувати",()=>{toast("Урок скасовано. Запишись знову, коли буде зручно 💛");});}
+function cancelSub(){openModal("💳","Скасувати абонемент?","Доступ збережеться до кінця оплаченого періоду.","Скасувати",()=>{toast("Абонемент скасовано. Будемо сумувати 🥺");});}
+function buyPlan(name,price){openModal("🎉","Оформити абонемент?",`${name} — ${price} ₴. Далі відкриється безпечна оплата.`,"Перейти до оплати",()=>{toast("💳 Тут відкриється оплата (WayForPay / Fondy)");});}
+function toggleHW(i){homework[i].done=!homework[i].done;document.getElementById('hw'+i).classList.toggle('done',homework[i].done);if(homework[i].done){setCoins(coins+20);toast("🎉 +20 балів! Так тримати!");}else{setCoins(coins-20);}}
+
+/* ====== NOTIFICATIONS ====== */
+function toggleNotif(e){e.stopPropagation();document.getElementById('notifPanel').classList.toggle('open');}
+function readNotif(i){if(notifications[i].unread){notifications[i].unread=false;renderNotifs();}}
+function markAllRead(e){e.stopPropagation();notifications.forEach(n=>n.unread=false);renderNotifs();toast("✅ Усі сповіщення прочитано");}
+document.addEventListener('click',e=>{const p=document.getElementById('notifPanel');if(p.classList.contains('open')&&!e.target.closest('.notif-wrap'))p.classList.remove('open');});
+
+/* ====== LESSON DETAIL ====== */
+function openLesson(i){
+  const l=lessons[i];
+  document.getElementById('dEmoji').textContent=l.ico;
+  document.getElementById('dName').textContent=l.name;
+  document.getElementById('dWhen').textContent=l.when+' · '+l.dur;
+  document.getElementById('dBody').innerHTML=`
+    <div class="drow"><span class="di">👩‍🏫</span><div>Викладач<br><b>${l.teacher}</b></div></div>
+    <div class="drow"><span class="di">${l.online?'💻':'📍'}</span><div>Де<br><b>${l.room}</b></div></div>
+    <div class="drow"><span class="di">📝</span><div>Опис<br><b style="font-weight:600">${l.desc}</b></div></div>
+    <div class="drow"><span class="di">🎒</span><div style="flex:1">Що взяти / матеріали
+      <div class="matlist">${l.mats.map(m=>`<div class="mat">${m}</div>`).join('')}</div></div></div>`;
+  const prim=document.getElementById('dPrimary');
+  if(l.tag==='ok'){prim.textContent='✓ Відвідано';prim.className='btn btn--ghost';prim.onclick=closeDetail;}
+  else if(l.online){prim.textContent='💻 Приєднатись';prim.className='btn btn--primary';prim.onclick=()=>{closeDetail();toast("💻 Тут відкриється посилання на Zoom");};}
+  else{prim.textContent='🔁 Перенести урок';prim.className='btn btn--primary';prim.onclick=()=>{closeDetail();switchView('book');toast("Обери новий зручний час 👇");};}
+  document.getElementById('detailOverlay').classList.add('open');
+}
+function closeDetail(){document.getElementById('detailOverlay').classList.remove('open');}
+document.getElementById('detailOverlay').addEventListener('click',e=>{if(e.target.id==='detailOverlay')closeDetail();});
+
+/* ====== PROFILE ====== */
+function toggleSwitch(el,label){el.classList.toggle('on');toast((el.classList.contains('on')?'🔔 Увімкнено: ':'🔕 Вимкнено: ')+label);}
+function saveProfile(){
+  const p1=document.getElementById('pfPass').value,p2=document.getElementById('pfPass2').value;
+  if(p1||p2){if(p1!==p2){toast("⚠️ Паролі не співпадають");return;}}
+  toast("💾 Зміни збережено!");
+}
+
+/* ====== MOBILE SHEET ====== */
+function openSheet(){document.getElementById('sheet').classList.add('open');}
+function closeSheet(){document.getElementById('sheet').classList.remove('open');}
+function sheetGo(v){closeSheet();switchView(v);}
+
+/* ====== LOGIN ====== */
+function doLogin(){document.getElementById('loginView').style.display='none';document.getElementById('appView').style.display='block';switchView('dash');}
+function logout(){document.getElementById('appView').style.display='none';document.getElementById('loginView').style.display='flex';document.getElementById('loginInput').value='';document.getElementById('passInput').value='';}
+document.getElementById('passInput').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
+renderDash();renderWeek();renderCal();renderSlots();renderHW();renderBadges();renderPlans();renderNotifs();
+</script>
+</body>
+</html>
