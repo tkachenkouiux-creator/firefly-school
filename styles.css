@@ -729,6 +729,16 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.15; font-weight: 700;
 }
 .building__pin { font-size: 1.4rem; }
 
+/* interactive Google Maps embed */
+.map-embed {
+  margin: 24px 0 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid rgba(255, 200, 0, .3);
+  box-shadow: var(--shadow);
+}
+.map-embed iframe { display: block; width: 100%; height: 360px; }
+
 /* ─── Footer ─── */
 .footer { background: var(--brown-900); padding: 56px 0 40px; text-align: center; border-top: 1px solid rgba(255, 200, 0, .12); }
 .footer__logo { height: 150px; width: auto; margin: 0 auto 14px; }
