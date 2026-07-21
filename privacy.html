@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Політика конфіденційності — Firefly School</title>
+  <meta name="description" content="Політика конфіденційності та обробки персональних даних освітнього простору Firefly School." />
+  <link rel="canonical" href="https://firefly-school.com/privacy.html" />
+  <meta name="robots" content="index, follow" />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,500;1,600;1,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="header" id="top">
+    <div class="container header__inner">
+      <a href="index.html" class="header__logo" aria-label="Firefly School — на головну">
+        <img src="assets/logo-clean.png" alt="Firefly School" />
+      </a>
+      <a href="index.html" class="btn btn--ghost header__cta">На головну</a>
+    </div>
+  </header>
+
+  <section class="section container--narrow container">
+    <span class="kicker">Юридична інформація</span>
+    <h1>Політика конфіденційності</h1>
+    <p class="muted">Дата останнього оновлення: <span id="updated"></span></p>
+
+    <!-- TODO: вкажіть офіційну назву закладу/ФОП/ТОВ та ЄДРПОУ/ІПН нижче -->
+    <p>Ця Політика конфіденційності описує, як освітній простір Firefly School (далі — «ми», «Firefly School») збирає, використовує та захищає персональні дані відвідувачів сайту firefly-school.com.</p>
+
+    <h2>1. Які дані ми збираємо</h2>
+    <p>Через форму заявки на сайті ми отримуємо: ім'я, номер телефону, обраний напрямок навчання та коментар (за бажанням). Дані передаються лише після того, як ви поставили галочку згоди у формі.</p>
+
+    <h2>2. Навіщо ми використовуємо ці дані</h2>
+    <p>Виключно для того, щоб зв'язатися з вами, проконсультувати щодо навчання дитини та записати на пробне заняття. Ми не передаємо ваші дані третім особам для маркетингових цілей.</p>
+
+    <h2>3. Як довго зберігаються дані</h2>
+    <p>Дані заявки зберігаються протягом строку, необхідного для обробки звернення та подальшої комунікації, доки ви не попросите їх видалити.</p>
+
+    <h2>4. Ваші права</h2>
+    <p>Ви маєте право запросити перегляд, виправлення або видалення своїх персональних даних, звернувшись за контактами, вказаними на сайті.</p>
+
+    <h2>5. Файли cookie</h2>
+    <p>Сайт може використовувати технічні cookie-файли та, за наявності підключеної аналітики (наприклад, Google Analytics чи Meta Pixel), — аналітичні cookie для розуміння відвідуваності сайту. Ви можете вимкнути cookie в налаштуваннях свого браузера — це не завадить перегляду сайту, але може обмежити роботу деяких функцій.</p>
+
+    <h2>6. Контакти</h2>
+    <p>З питань щодо цієї політики звертайтеся: <a href="tel:+380967493190">+38 (096) 749-31-90</a>, м. Вінниця, провулок Василя Стефаника, 5.</p>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p class="footer__copy">© <span id="year"></span> Firefly School</p>
+      <p class="footer__legal"><a href="index.html">На головну</a> · <a href="terms.html">Публічна оферта</a></p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById("updated").textContent = new Date().toLocaleDateString("uk-UA", { year: "numeric", month: "long", day: "numeric" });
+  </script>
+</body>
+</html>

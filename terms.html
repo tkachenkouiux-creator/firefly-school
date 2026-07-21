@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Публічна оферта — Firefly School</title>
+  <meta name="description" content="Публічна оферта та умови користування послугами освітнього простору Firefly School." />
+  <link rel="canonical" href="https://firefly-school.com/terms.html" />
+  <meta name="robots" content="index, follow" />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,500;1,600;1,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="header" id="top">
+    <div class="container header__inner">
+      <a href="index.html" class="header__logo" aria-label="Firefly School — на головну">
+        <img src="assets/logo-clean.png" alt="Firefly School" />
+      </a>
+      <a href="index.html" class="btn btn--ghost header__cta">На головну</a>
+    </div>
+  </header>
+
+  <section class="section container--narrow container">
+    <span class="kicker">Юридична інформація</span>
+    <h1>Публічна оферта</h1>
+    <p class="muted">Дата останнього оновлення: <span id="updated"></span></p>
+
+    <!-- TODO: вкажіть офіційну назву закладу/ФОП/ТОВ, ЄДРПОУ/ІПН та реквізити -->
+    <p>Цей документ є публічною пропозицією (офертою) освітнього простору Firefly School (м. Вінниця, провулок Василя Стефаника, 5) щодо надання освітніх послуг і послуг розвитку дітей. Заповнюючи форму заявки або записуючись на пробне заняття, ви погоджуєтесь з умовами, викладеними нижче.</p>
+
+    <h2>1. Предмет оферти</h2>
+    <p>Firefly School надає послуги підготовки до школи, вивчення іноземних мов, логопедичні та психологічні консультації, а також гуртки для дітей згідно з розкладом, узгодженим індивідуально.</p>
+
+    <h2>2. Порядок запису та оплати</h2>
+    <p>Запис на пробне заняття здійснюється через форму на сайті або за телефоном. Вартість занять узгоджується до початку навчання; оплата проводиться згідно з умовами, погодженими із адміністрацією.</p>
+
+    <h2>3. Скасування та перенесення занять</h2>
+    <p>Про скасування або перенесення заняття просимо повідомляти заздалегідь за контактним номером телефону.</p>
+
+    <h2>4. Відповідальність сторін</h2>
+    <p>Firefly School забезпечує безпечні умови навчання. Батьки/законні представники відповідають за надання достовірних контактних даних та своєчасне інформування про стан здоров'я дитини, важливе для занять.</p>
+
+    <h2>5. Контакти</h2>
+    <p><a href="tel:+380967493190">+38 (096) 749-31-90</a>, м. Вінниця, провулок Василя Стефаника, 5.</p>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p class="footer__copy">© <span id="year"></span> Firefly School</p>
+      <p class="footer__legal"><a href="index.html">На головну</a> · <a href="privacy.html">Політика конфіденційності</a></p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById("updated").textContent = new Date().toLocaleDateString("uk-UA", { year: "numeric", month: "long", day: "numeric" });
+  </script>
+</body>
+</html>

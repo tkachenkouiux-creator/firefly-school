@@ -5,14 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Firefly School — освітній простір, де кожна дитина сяє</title>
   <meta name="description" content="Firefly School — освітній простір в Академічному районі: підготовка до школи, іноземні мови, логопед, психолог та десятки гуртків. Перший урок безкоштовно." />
+  <link rel="canonical" href="https://firefly-school.com/" />
+  <meta name="robots" content="index, follow" />
+
   <meta property="og:title" content="Firefly School — де кожна дитина сяє" />
   <meta property="og:description" content="Навчаємо дітей мислити та не боятися бути собою. Маленькі групи, сучасні методики, тепла атмосфера. Перший урок безкоштовно." />
   <meta property="og:type" content="website" />
-  <link rel="icon" type="image/png" href="assets/firefly.png" />
+  <meta property="og:url" content="https://firefly-school.com/" />
+  <meta property="og:image" content="https://firefly-school.com/assets/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="uk_UA" />
+  <meta property="og:site_name" content="Firefly School" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Firefly School — де кожна дитина сяє" />
+  <meta name="twitter:description" content="Навчаємо дітей мислити та не боятися бути собою. Маленькі групи, сучасні методики, тепла атмосфера. Перший урок безкоштовно." />
+  <meta name="twitter:image" content="https://firefly-school.com/assets/og-image.jpg" />
+
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,500;1,600;1,700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "Firefly School",
+    "url": "https://firefly-school.com/",
+    "logo": "https://firefly-school.com/assets/logo-clean.png",
+    "image": "https://firefly-school.com/assets/og-image.jpg",
+    "telephone": "+380967493190",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "провулок Василя Стефаника, 5",
+      "addressLocality": "Вінниця",
+      "addressCountry": "UA"
+    },
+    "openingHours": "Mo-Sa 10:00-20:00",
+    "sameAs": [
+      "https://www.instagram.com/firefly_school_/"
+    ]
+  }
+  </script>
 </head>
 <body>
 
@@ -443,6 +481,12 @@
           <label for="msg">Коментар <span class="muted">(необов'язково)</span></label>
           <textarea id="msg" name="msg" rows="2" placeholder="Вік дитини, побажання…"></textarea>
         </div>
+        <div class="field field--checkbox">
+          <label class="checkbox">
+            <input type="checkbox" id="consent" name="consent" required />
+            <span>Погоджуюсь з <a href="privacy.html" target="_blank" rel="noopener">політикою конфіденційності</a> та обробкою персональних даних</span>
+          </label>
+        </div>
         <button type="submit" class="btn btn--primary btn--lg btn--block">Отримати консультацію</button>
         <p class="form__note" id="formNote" hidden>Дякуємо! Ми зв'яжемось з вами найближчим часом ✨</p>
       </form>
@@ -468,6 +512,13 @@
       </div>
       <p class="footer__slogan">де кожна дитина сяє ✨</p>
       <p class="footer__copy">© <span id="year"></span> Firefly School · Освітній простір · Академічний район</p>
+      <p class="footer__legal">
+        <a href="privacy.html">Політика конфіденційності</a> · <a href="terms.html">Публічна оферта</a>
+      </p>
+      <p class="footer__requisites muted">
+        <!-- TODO: вкажіть реквізити (ФОП/ТОВ, ЄДРПОУ/ІПН) для реклами Meta/Google -->
+        м. Вінниця, провулок Василя Стефаника, 5 · +38 (096) 749-31-90
+      </p>
     </div>
   </footer>
 

@@ -95,11 +95,41 @@
 
   const form = document.getElementById("leadForm");
   const note = document.getElementById("formNote");
+
+  /* ── Маска телефону +38 (0XX) XXX-XX-XX ── */
+  const phoneField = form ? form.elements.phone : null;
+  function formatPhone(raw) {
+    let digits = raw.replace(/\D/g, "");
+    if (digits.startsWith("380")) digits = digits.slice(3);
+    else if (digits.startsWith("0") && digits.length >= 1) digits = digits.slice(digits.startsWith("00") ? 2 : 0);
+    digits = digits.replace(/^0/, "");
+    digits = digits.slice(0, 9);
+    let out = "+38 (0";
+    out += digits.slice(0, 2);
+    if (digits.length > 2) out += ") " + digits.slice(2, 5);
+    else if (digits.length === 2) out += ")";
+    if (digits.length > 5) out += "-" + digits.slice(5, 7);
+    if (digits.length > 7) out += "-" + digits.slice(7, 9);
+    return out;
+  }
+  function isValidPhone(value) {
+    const digits = value.replace(/\D/g, "");
+    return digits.length === 11 && digits.startsWith("380");
+  }
+  if (phoneField) {
+    phoneField.addEventListener("focus", function () {
+      if (!phoneField.value) phoneField.value = "+38 (0";
+    });
+    phoneField.addEventListener("input", function () {
+      phoneField.value = formatPhone(phoneField.value);
+    });
+  }
+
   if (form) {
     form.addEventListener("submit", async function (e) {
       e.preventDefault();
       let valid = true;
-      ["name", "phone"].forEach((id) => {
+      ["name"].forEach((id) => {
         const field = form.elements[id];
         if (!field.value.trim()) {
           field.classList.add("invalid");
@@ -108,6 +138,19 @@
           field.classList.remove("invalid");
         }
       });
+      if (!isValidPhone(form.elements.phone.value)) {
+        form.elements.phone.classList.add("invalid");
+        valid = false;
+      } else {
+        form.elements.phone.classList.remove("invalid");
+      }
+      const consentField = form.elements.consent;
+      if (consentField && !consentField.checked) {
+        consentField.classList.add("invalid");
+        valid = false;
+      } else if (consentField) {
+        consentField.classList.remove("invalid");
+      }
       if (!valid) return;
 
       const submitBtn = form.querySelector("button[type=submit]");
@@ -144,7 +187,8 @@
       form.reset();
     });
     form.addEventListener("input", function (e) {
-      if (e.target.classList.contains("invalid") && e.target.value.trim()) {
+      const isFilled = e.target.type === "checkbox" ? e.target.checked : e.target.value.trim();
+      if (e.target.classList.contains("invalid") && isFilled) {
         e.target.classList.remove("invalid");
       }
     });
