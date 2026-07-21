@@ -86,15 +86,14 @@
   }
 
   /* ── Lead form → надсилання заявки в Telegram ──
-     Щоб заявки приходили тобі в Telegram, впиши нижче два значення:
-       1) TG_BOT_TOKEN — токен бота від @BotFather
-       2) TG_CHAT_ID   — твій chat_id (дізнатися: напиши боту @userinfobot)
-     Поки вони порожні, форма просто показує «Дякуємо» без відправки.        */
-  var TG_BOT_TOKEN = "8613342657:AAHvufe9hvzwpSTMsM-6pcYMVj712PBRg0c";
-  var TG_CHAT_ID = "8837665295";
+     Заявка йде на Cloudflare Worker (WORKER_URL), а не напряму в Telegram —
+     токен бота зберігається у секретах Worker'а і ніколи не потрапляє в код сайту.
+     Заповни WORKER_URL адресою свого Worker'а після його деплою.             */
+  var WORKER_URL = "https://firefly-lead-form.tkachenko-ui-ux.workers.dev";
 
   const form = document.getElementById("leadForm");
   const note = document.getElementById("formNote");
+  const errorNote = document.getElementById("formError");
 
   /* ── Маска телефону +38 (0XX) XXX-XX-XX ── */
   const phoneField = form ? form.elements.phone : null;
@@ -114,7 +113,7 @@
   }
   function isValidPhone(value) {
     const digits = value.replace(/\D/g, "");
-    return digits.length === 11 && digits.startsWith("380");
+    return digits.length === 12 && digits.startsWith("380");
   }
   if (phoneField) {
     phoneField.addEventListener("focus", function () {
@@ -155,36 +154,40 @@
 
       const submitBtn = form.querySelector("button[type=submit]");
       submitBtn.disabled = true;
+      if (errorNote) errorNote.hidden = true;
 
       const data = {
         name: form.elements.name.value.trim(),
         phone: form.elements.phone.value.trim(),
         direction: form.elements.direction.value || "не вказано",
         msg: form.elements.msg.value.trim() || "—",
+        website: form.elements.website ? form.elements.website.value : "", // honeypot
       };
-      const text =
-        "🔔 Нова заявка — Firefly School\n\n" +
-        "👤 Ім'я: " + data.name + "\n" +
-        "📞 Телефон: " + data.phone + "\n" +
-        "🎯 Напрямок: " + data.direction + "\n" +
-        "💬 Коментар: " + data.msg;
 
-      if (TG_BOT_TOKEN && TG_CHAT_ID) {
+      let ok = false;
+      if (WORKER_URL && WORKER_URL.indexOf("YOUR-SUBDOMAIN") === -1) {
         try {
-          await fetch("https://api.telegram.org/bot" + TG_BOT_TOKEN + "/sendMessage", {
+          const res = await fetch(WORKER_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ chat_id: TG_CHAT_ID, text: text }),
+            body: JSON.stringify(data),
           });
+          ok = res.ok;
         } catch (err) {
-          console.error("Не вдалося надіслати заявку в Telegram:", err);
+          console.error("Не вдалося надіслати заявку:", err);
         }
       } else {
-        console.warn("Telegram не налаштовано — впиши TG_BOT_TOKEN і TG_CHAT_ID у script.js");
+        console.warn("WORKER_URL не налаштовано — впиши адресу свого Cloudflare Worker у script.js");
       }
 
-      if (note) note.hidden = false;
-      form.reset();
+      submitBtn.disabled = false;
+
+      if (ok) {
+        if (note) note.hidden = false;
+        form.reset();
+      } else {
+        if (errorNote) errorNote.hidden = false;
+      }
     });
     form.addEventListener("input", function (e) {
       const isFilled = e.target.type === "checkbox" ? e.target.checked : e.target.value.trim();
